@@ -13,15 +13,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-
-app.use(require('./application/config/routes'));
-
-
+// Routes controllers config
+app.use(require('./application/controllers/index'));
 
 mongoose.connect(process.env.URLDB, (err, res) => {
-
     if (err) throw err;
-
     console.log('Data base connected $process.env.URLDB');
 
 });

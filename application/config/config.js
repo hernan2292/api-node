@@ -3,11 +3,20 @@
 // ============================
 process.env.PORT = process.env.PORT || 3000;
 
-
 // ============================
 //  Entorno
 // ============================
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
+
+// ============================
+//  Token lifetime
+// ============================
+process.env.TOKEN_LIFETIME = process.env.TOKEN_LIFETIME || 60 * 60 * 24 * 30;
+
+// ============================
+//  Token seed
+// ============================
+process.env.TOKEN_SEED = process.env.TOKEN_SEED || 'dev';
 
 
 // ============================

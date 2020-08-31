@@ -1,25 +1,23 @@
 const express = require('express');
-
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
-const Usuario = require('../models/usuario');
+const Model = require('../models/entity');
 
 const app = express();
 
+app.get('/entity', function(req, res) {
 
-app.get('/usuario', function(req, res) {
+    let start = req.query.start || 0;
+    start = Number(start);
 
-    let desde = req.query.desde || 0;
-    desde = Number(desde);
+    let limit = req.query.limit || 5;
+    limit = Number(limit);
 
-    let limite = req.query.limite || 5;
-    limite = Number(limite);
-
-    Usuario.find({ estado: true }, 'nombre email role estado google img')
-        .skip(desde)
-        .limit(limite)
-        .exec((err, usuarios) => {
+    Model.find({ estado: true }, 'nombre email role estado google img')
+        .skip(start)
+        .limit(limit)
+        .exec((err, model) => {
 
             if (err) {
                 return res.status(400).json({
@@ -28,12 +26,12 @@ app.get('/usuario', function(req, res) {
                 });
             }
 
-            Usuario.count({ estado: true }, (err, conteo) => {
+            model.count({ state: true }, (err, count) => {
 
                 res.json({
                     ok: true,
-                    usuarios,
-                    cuantos: conteo
+                    model,
+                    count: count
                 });
 
             });
@@ -41,21 +39,20 @@ app.get('/usuario', function(req, res) {
 
         });
 
-
 });
 
-app.post('/usuario', function(req, res) {
+app.post('/entity', function(req, res) {
 
     let body = req.body;
 
-    let usuario = new Usuario({
-        nombre: body.nombre,
+    let model = new Model({
+        name: body.name,
         email: body.email,
         password: bcrypt.hashSync(body.password, 10),
         role: body.role
     });
 
-    usuario.save((err, usuarioDB) => {
+    model.save((err, userDB) => {
 
         if (err) {
             return res.status(400).json({
@@ -66,7 +63,7 @@ app.post('/usuario', function(req, res) {
 
         res.json({
             ok: true,
-            usuario: usuarioDB
+            user: userDB
         });
 
     });
@@ -74,12 +71,12 @@ app.post('/usuario', function(req, res) {
 
 });
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/entity/:id', function(req, res) {
 
     let id = req.params.id;
-    let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
+    let body = _.pick(req.body, ['name', 'email', 'img', 'role', 'state']);
 
-    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
+    Model.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, userDB) => {
 
         if (err) {
             return res.status(400).json({
@@ -88,29 +85,27 @@ app.put('/usuario/:id', function(req, res) {
             });
         }
 
-
-
         res.json({
             ok: true,
-            usuario: usuarioDB
+            user: userDB
         });
 
     })
 
 });
 
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/entity/:id', function(req, res) {
 
 
     let id = req.params.id;
 
     // Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
 
-    let cambiaEstado = {
+    let changeState = {
         estado: false
     };
 
-    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
+    Model.findByIdAndUpdate(id, changeState, { new: true }, (err, userDeleted) => {
 
         if (err) {
             return res.status(400).json({
@@ -119,26 +114,23 @@ app.delete('/usuario/:id', function(req, res) {
             });
         };
 
-        if (!usuarioBorrado) {
+        if (!userDeleted) {
             return res.status(400).json({
                 ok: false,
                 err: {
-                    message: 'Usuario no encontrado'
+                    message: 'User not find'
                 }
             });
         }
 
         res.json({
             ok: true,
-            usuario: usuarioBorrado
+            usuario: userDeleted
         });
 
     });
 
-
-
 });
 
-
-
 module.exports = app;
+
