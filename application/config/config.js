@@ -1,10 +1,10 @@
 // ============================
-//  Puerto
+//  Port
 // ============================
 process.env.PORT = process.env.PORT || 3000;
 
 // ============================
-//  Entorno
+//  Environment
 // ============================
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 
@@ -20,7 +20,7 @@ process.env.TOKEN_SEED = process.env.TOKEN_SEED || 'dev';
 
 
 // ============================
-//  Base de datos
+//  Data Base
 // ============================
 let urlDB;
 
@@ -30,3 +30,9 @@ if (process.env.NODE_ENV === 'dev') {
     urlDB = process.env.MONGO_URI;
 }
 process.env.URLDB = urlDB;
+
+
+// ============================
+//  Google client
+// ============================
+process.env.CLIENT_ID = process.env.CLIENT_ID || '1036035725337-van3au8jrb85b0qvmgpq6taep87g5n2g.apps.googleusercontent.com'
